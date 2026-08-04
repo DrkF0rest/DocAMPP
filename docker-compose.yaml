@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Apache + PHP
+  web:
+    image: php:8.2-apache
+    container_name: docampp_web
+    ports:
+      - "8080:80"
+      - "443:443"  # HTTPS (optional)
+    volumes:
+      - ./htdocs:/var/www/html
+      - ./apache-config:/etc/apache2/sites-available
+      - ./php-ini:/usr/local/etc/php/conf.d
+      - ./logs/apache:/var/log/apache2
+    environment:
+      - PHP_MEMORY_LIMIT=256M
+      - PHP_UPLOAD_MAX_FILESIZE=100M
+      - PHP_POST_MAX_SIZE=100M
+      - PHP_MAX_EXECUTION_TIME=300
+    depends_on:
+      - db
+    networks:
+      - docampp-network
+
+  # MariaDB (MySQL)
+  db:
+    image: mariadb:latest
+    container_name: docampp_db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=docampp_db
+      - MYSQL_USER=docampp_user
+      - MYSQL_PASSWORD=docampp_pass
+    volumes:
+      - ./db-data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+    networks:
+      - docampp-network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: docampp_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_ARBITRARY=0
+      - UPLOAD_LIMIT=100M
+    depends_on:
+      - db
+    networks:
+      - docampp-network
+
+networks:
+  docampp-network:
+    driver: bridge
+
+volumes:
+  htdocs:
+  db-data:
+  # mysql-data:
