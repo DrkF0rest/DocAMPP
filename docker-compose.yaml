@@ -1,23 +1,16 @@
-version: '3.8'
-
 services:
   # Apache + PHP
   web:
-    image: php:8.2-apache
+    build: .
     container_name: docampp_web
     ports:
       - "8080:80"
-      - "443:443"  # HTTPS (optional)
+      - "443:443"
     volumes:
       - ./htdocs:/var/www/html
-      - ./apache-config:/etc/apache2/sites-available
-      - ./php-ini:/usr/local/etc/php/conf.d
+      - ./apache-config:/etc/apache2/sites-available:ro
+      - ./php-ini:/usr/local/etc/php/conf.d:ro
       - ./logs/apache:/var/log/apache2
-    environment:
-      - PHP_MEMORY_LIMIT=256M
-      - PHP_UPLOAD_MAX_FILESIZE=100M
-      - PHP_POST_MAX_SIZE=100M
-      - PHP_MAX_EXECUTION_TIME=300
     depends_on:
       - db
     networks:
@@ -59,8 +52,3 @@ services:
 networks:
   docampp-network:
     driver: bridge
-
-volumes:
-  htdocs:
-  db-data:
-  # mysql-data:
