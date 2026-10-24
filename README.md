@@ -449,6 +449,15 @@ If you find DocAMPP useful, please consider:
 
 ## 📅 Changelog
 
+### v1.0.1 (2026-10-24)
+- 🐛 Fixed docker-compose configuration to use custom Dockerfile
+- 📁 Added missing directories (apache-config, php-ini, logs, db-init, db-data)
+- ⚙️ Created default php-ini/custom.ini with essential PHP settings
+- 🔧 Optimized Dockerfile with apt cache cleanup
+- 🔒 Restored HTTPS port 443 mapping
+- 📦 Fixed volume mount configuration and removed conflicting named volumes
+- 🗑️ Removed deprecated docker-compose version declaration
+
 ### v1.0.0 (2024)
 - 🎉 Initial release
 - 🐳 Docker, Apache, MySQL, PHP stack
